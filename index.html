@@ -159,6 +159,37 @@ mark{background:#FFE58A;color:inherit;border-radius:2px;padding:0 1px}
   .rules-layout aside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
 }
 @media (max-width:899px){ .rules-layout aside .toc{max-height:240px;overflow:auto} }
+
+.champ{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--amber-b);border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px rgba(20,32,43,.05)}
+.trophy{width:52px;height:52px;flex:none;border-radius:14px;background:var(--amber);color:var(--amber-t);display:flex;align-items:center;justify-content:center}
+.trophy svg{width:26px;height:26px}
+.champ .lbl,.next .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.cname{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;display:block}
+.home{display:grid;grid-template-columns:1fr;gap:12px}
+.hcol{display:flex;flex-direction:column;gap:12px;min-width:0}
+.hcol .sec{margin:0}
+.next{display:flex;flex-direction:column;gap:2px;background:#EAF2FB;border-radius:12px;padding:12px;margin:4px 0 8px}
+.next .lbl{color:var(--navy)}
+.nbig{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--navy)}
+.drow{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+.dwhen{width:96px;flex:none;font-weight:700;font-size:12.5px}
+.dchip{font-size:11px;font-weight:700;color:var(--teal);background:var(--teal-l);padding:3px 8px;border-radius:10px;white-space:nowrap}
+.matches{display:grid;grid-template-columns:1fr;gap:8px}
+.match{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.mtier{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;padding:6px 10px 0}
+.match .mtier{padding:6px 10px 2px}
+.mt{display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:13px}
+.mt.win{background:#EAF2FB}
+.mt.win b{color:var(--navy)}
+.mbadge{display:inline-flex;min-width:40px;justify-content:center;padding:2px 4px;border-radius:6px;background:var(--navy);color:#fff;font-size:11px;font-weight:700}
+.msc{font-weight:700;font-variant-numeric:tabular-nums}
+.htbl tr.po td{background:#EAF2FB}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{display:flex;flex-direction:column;gap:5px;padding:14px;text-decoration:none;color:var(--ink);min-height:104px}
+.tile:hover{border-color:#B8C9DB}
+.ticon{width:36px;height:36px;border-radius:10px;background:#EAF2FB;color:var(--navy);display:flex;align-items:center;justify-content:center}
+.ticon svg{width:20px;height:20px}
+@media (min-width:900px){ .home{grid-template-columns:3fr 2fr;align-items:start} .matches{grid-template-columns:1fr 1fr} }
 </style>
 </head>
 <body>
@@ -189,13 +220,15 @@ const info = p => DATA.stats[p.n] || {};
 const store = { get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
 
 const ICON = {
+  Home: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
+  Keepers: 'M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11',
   League: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
   Teams: 'M16 11a4 4 0 1 0-8 0M4 20c0-3 3.6-5 8-5s8 2 8 5',
   Planner: 'M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11',
   History: 'M12 8v4l3 2M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
   Rules: 'M5 4a1 1 0 0 1 1-1h13v15H6a2 2 0 0 0-2 2V5M4 20a2 2 0 0 0 2 2h13v-4M9 7h6M9 11h6'
 };
-const NAV = [['League', '#/'], ['Teams', '#/team/'], ['Planner', '#/planner/'], ['History', '#/history'], ['Rules', '#/rules']];
+const NAV = [['Home', '#/'], ['Teams', '#/teams'], ['Keepers', '#/keepers'], ['History', '#/history'], ['Rules', '#/rules']];
 function nav(active){
   $('tabs').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[n]}"/></svg>${n}</a>`).join('');
   $('topnav').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}">${n}</a>`).join('');
@@ -223,16 +256,17 @@ const keyKept = `<span><span class="sw amber"></span>Kept in 2026</span>`;
 const keyKeptPick = `<span><span class="sw amber"></span>Pick filled by a keeper</span>`;
 
 // ---------- League home ----------
-function viewLeague(){
-  nav('League');
-  head(C.season + ' Keeper Season', `Keepers due ${C.keeperDeadline}${DATA.statsUpdated ? ' · stats updated ' + new Date(DATA.statsUpdated).toLocaleDateString() : ''}`);
+function viewKeepers(){
+  nav('Keepers');
+  head(C.season + ' keepers', `Round values for every rostered player · keepers due ${C.keeperDeadline}`);
   const champ = DATA.champs[0];
   return `<div class="grid2 wide">
     <div class="card pad stat"><div class="lbl">Trades &amp; FA open</div><div class="val">${esc(C.tradesOpen)}</div></div>
     <div class="card pad stat"><div class="lbl">Defending champ</div><div class="val">${esc(champ ? champ[1] : '')}</div></div>
     <div class="card pad stat"><div class="lbl">Keepers</div><div class="val">${C.keepers.hitters} H + ${C.keepers.pitchers} P</div></div>
-    <div class="card pad stat"><div class="lbl">Rulebook</div><div class="val"><a href="#/rules">Read it</a></div></div>
+    <div class="card pad stat"><div class="lbl">Rules</div><div class="val"><a href="#/rules/keepers">Keeper rules</a></div></div>
   </div>
+  <p style="margin:14px 0 0"><a class="btn" href="#/planner/">Open the keeper planner</a></p>
   <h2 class="h2">Teams in ${C.season} draft order</h2>
   <div class="teams">${teams.map(t => {
     const k = t.players.filter(kept);
@@ -321,7 +355,7 @@ function assignCosts(sel){
   return out;
 }
 function viewPlanner(abbr){
-  nav('Planner');
+  nav('Keepers');
   const t = byAbbr(abbr || store.get('mfb_team') || '');
   store.set('mfb_team', t.abbr);
   head('Keeper planner', `${t.owner} · ${t.abbr} · pick ${C.keepers.hitters} hitters and ${C.keepers.pitchers} pitchers`, false);
@@ -527,6 +561,106 @@ function bindRules(target){
   if (target){ const el = document.getElementById('r-' + target); if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 0); }
 }
 
+// ---------- Home (league landing) ----------
+const ESPN = DATA.espn || null;
+const NOW = () => Date.now();
+function untilText(ms){
+  let d = Math.max(0, ms - NOW()), m = Math.floor(d / 60000), h = Math.floor(m / 60), days = Math.floor(h / 24);
+  if (days >= 2) return `in ${days} days`;
+  if (days === 1) return `in 1 day ${h % 24}h`;
+  if (h >= 1) return `in ${h}h ${m % 60}m`;
+  return m > 0 ? `in ${m} min` : 'now';
+}
+const fmtWhen = (ms, withTime) => new Date(ms).toLocaleString(undefined, withTime ? { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' } : { month: 'short', day: 'numeric', year: 'numeric' });
+function keyDates(){
+  const out = [], fresh = ESPN && Number(ESPN.season) >= C.season;
+  const trade = Date.parse(C.tradesOpen);
+  if (trade && trade > NOW()) out.push({ ms: trade, label: 'Trades, waivers and free agency open', time: false });
+  if (fresh && ESPN.keeperDeadline && ESPN.keeperDeadline > NOW()) out.push({ ms: ESPN.keeperDeadline, label: 'Keepers due in ESPN', time: true });
+  if (fresh && ESPN.draftDate && ESPN.draftDate > NOW()) out.push({ ms: ESPN.draftDate, label: `${C.season} draft${ESPN.draftType ? ' (' + ESPN.draftType.toLowerCase() + ')' : ''}`, time: true });
+  out.sort((a, b) => a.ms - b.ms);
+  if (!out.some(d => /Keepers/.test(d.label))) out.push({ ms: null, label: 'Keepers due in ESPN', note: `TBA · ${C.keeperDeadline}` });
+  if (!out.some(d => /draft/.test(d.label))) out.push({ ms: null, label: `${C.season} draft`, note: 'TBA · set in ESPN' });
+  return out;
+}
+function tierName(g, isLast){
+  if (g.tier === 'WINNERS_BRACKET') return isLast ? 'Championship' : 'Semifinal';
+  if (g.tier === 'WINNERS_CONSOLATION_LADDER') return '3rd place';
+  if (/LOSERS/.test(g.tier)) return 'Consolation';
+  return '';
+}
+function scoreRow(g, isLast){
+  const t = s => `${s.w}-${s.l}${s.t ? '-' + s.t : ''}`;
+  const wH = g.winner === 'HOME', wA = g.winner === 'AWAY';
+  const side = (s, win) => `<div class="mt ${win ? 'win' : ''}"><span class="mbadge">${esc(s.abbr)}</span><span class="grow"><b>${esc(s.owner)}</b></span><span class="msc">${t(s)}</span></div>`;
+  const tn = tierName(g, isLast);
+  return `<div class="match">${tn ? `<div class="mtier">${tn}</div>` : ''}${g.away ? side(g.away, wA) : ''}${side(g.home, wH)}</div>`;
+}
+function viewHome(){
+  nav('Home');
+  const champ = DATA.champs[0], ownersTab = HIST.find(h => h.type === 'Owners');
+  const teamNameOf = o => { if (!ownersTab) return ''; const ci = ownersTab.headers.findIndex(x => /team name/i.test(x)); const r = ownersTab.rows.find(r => r[0] === o); return ci >= 0 && r ? r[ci] : ''; };
+  const titles = champ ? DATA.champs.filter(r => r[1] === champ[1]).length : 0;
+  const old = ESPN && Number(ESPN.season) < C.season;
+  head('Midwest League', `${C.keepers.hitters + C.keepers.pitchers}-keeper league · ${old || !ESPN || !ESPN.active ? C.season + ' offseason' : C.season + ' season'}`);
+  $('kicker').textContent = `Fantasy Baseball · Est. ${C.founded || 2021}`;
+  const kd = keyDates(), next = kd.find(d => d.ms);
+  const datesHtml = `<section class="card pad" aria-label="Key dates"><div class="row-between" style="margin-bottom:6px"><h2 style="font-size:15px">Coming up</h2><span class="small">From ESPN and the commissioner</span></div>
+    ${next ? `<div class="next"><span class="lbl">Next up</span><span class="nbig" data-until="${next.ms}">${untilText(next.ms)}</span><span class="small" style="color:var(--ink)">${esc(next.label)} · ${fmtWhen(next.ms, next.time)}</span></div>` : ''}
+    ${kd.map(d => `<div class="drow"><span class="dwhen">${d.ms ? fmtWhen(d.ms, d.time) : 'TBA'}</span><span class="grow">${esc(d.label)}${d.note ? `<br><span class="small">${esc(d.note)}</span>` : ''}</span>${d.ms ? `<span class="dchip" data-until="${d.ms}">${untilText(d.ms)}</span>` : ''}</div>`).join('')}</section>`;
+  // last results
+  let resHtml = '';
+  if (ESPN && ESPN.last && ESPN.last.length){
+    const p = ESPN.lastPeriod, isPO = p > ESPN.regularWeeks, isFinal = !ESPN.playoffs.some(g => g.period > p);
+    const order = g => g.tier === 'WINNERS_BRACKET' ? 0 : g.tier === 'WINNERS_CONSOLATION_LADDER' ? 1 : g.tier === 'NONE' ? 2 : 3;
+    const label = isPO ? `Playoffs, round ${p - ESPN.regularWeeks}` : `Week ${p} results`;
+    resHtml = `<section class="card pad" aria-label="Latest results"><div class="row-between" style="margin-bottom:8px"><h2 style="font-size:15px">${old ? `Final results of ${ESPN.season}` : 'Last week'}</h2><span class="small">${esc(label)} · category W-L-T</span></div>
+      <div class="key" style="margin:0 0 8px"><b>KEY</b><span><span class="sw sel"></span>Winner</span></div>
+      <div class="matches">${ESPN.last.slice().sort((a, b) => order(a) - order(b)).map(g => scoreRow(g, isFinal)).join('')}</div></section>`;
+  }
+  // standings
+  let standHtml = '';
+  if (ESPN && ESPN.standings && ESPN.standings.length){
+    const n = ESPN.playoffTeams || 4;
+    standHtml = `<section class="card sec" aria-label="Standings"><div class="sechd"><span>${old ? ESPN.season + ' final standings' : 'Standings'}</span><span>Category record · ESPN</span></div>
+      <div class="key" style="margin:8px 14px"><b>KEY</b><span><span class="sw sel"></span>Playoff spot (top ${n})</span></div>
+      <div class="scroll"><table class="htbl"><thead><tr><th>Seed</th><th class="l">Team</th><th>W-L-T</th></tr></thead><tbody>${ESPN.standings.map(s => `<tr class="${s.seed && s.seed <= n ? 'po' : ''}"><td><b>${s.seed || ''}</b></td><td class="l"><span class="mbadge">${esc(s.abbr)}</span> <b>${esc(s.owner)}</b> <span class="small">${esc(s.name)}</span></td><td style="white-space:nowrap">${s.w}-${s.l}-${s.t}</td></tr>`).join('')}</tbody></table></div></section>`;
+  }
+  // bracket
+  let brHtml = '';
+  if (ESPN && ESPN.playoffs && ESPN.playoffs.length){
+    const periods = Array.from(new Set(ESPN.playoffs.map(g => g.period))).sort((a, b) => a - b);
+    brHtml = `<section class="card pad" aria-label="Playoffs"><h2 style="font-size:15px;margin-bottom:8px">${old ? ESPN.season + ' playoffs' : 'Playoffs'}</h2>${periods.map((p, i) => `<div class="mtier" style="margin:8px 0 6px">${i === periods.length - 1 ? 'Championship' : 'Semifinals'}</div><div class="matches">${ESPN.playoffs.filter(g => g.period === p).map(g => scoreRow(Object.assign({}, g, { tier: 'NONE' }), false)).join('')}</div>`).join('')}</section>`;
+  }
+  // category races from the sheet
+  const wTab = tabsOf('Weekly Categories')[0], sl = seasonRows(), slYear = sl.length ? sl.map(s => s.year).sort().reverse()[0] : '';
+  const wk = wTab ? tally(weeklyRows(wTab).map(w => w.winner)) : [];
+  const raceHtml = (wk.length || sl.length) ? `<section class="card sec" aria-label="Category races"><div class="sechd"><span>${slYear ? slYear + ' season-long categories' : 'Season-long categories'}</span><span>$50 each</span></div>
+    ${sl.filter(s => s.year === slYear).map(s => `<div class="prow"><div class="grow"><span class="small">${esc(s.cat)}</span><span class="nm">${esc(s.winner)}</span></div><span class="small" style="font-weight:700;color:var(--ink)">${esc(s.total)}</span></div>`).join('')}</section>
+    ${wk.length ? `<section class="card sec" aria-label="Weekly wins"><div class="sechd"><span>${wTab.year} weekly category wins</span><span>$20 each</span></div>${wk.slice(0, 6).map(([n, c]) => `<div class="prow"><div class="grow"><span class="nm">${esc(n)}</span></div><b>${c}</b></div>`).join('')}<a class="prow" href="#/history/categories/${wTab.year}" style="color:var(--navy);font-weight:600">All category winners →</a></section>` : ''}` : '';
+  const ann = (DATA.announcements || []).slice(0, 3);
+  const annHtml = ann.length ? `<section class="card pad" aria-label="Announcements"><h2 style="font-size:15px;margin-bottom:6px">From the commissioner</h2>${ann.map(a => `<div style="padding:6px 0;border-top:1px solid var(--line)"><p style="margin:0 0 2px;line-height:1.5">${esc(a.text)}</p>${a.date ? `<span class="small">${esc(a.date)}</span>` : ''}</div>`).join('')}</section>` : '';
+  const tiles = [['Keepers', `${C.season} round values and the keeper planner`, '#/keepers'], ['Teams', 'Every roster with MLB stats', '#/teams'], ['History', 'Champions, drafts, keepers and categories', '#/history'], ['Rules', 'The official rulebook, searchable', '#/rules']];
+  const tilesHtml = `<div class="tiles">${tiles.map(([n, d, h]) => `<a class="card tile" href="${h}"><span class="ticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[n]}"/></svg></span><b>${n}</b><span class="small">${d}</span></a>`).join('')}</div>`;
+  const glance = [['Teams', String(DATA.order.length)], ['Format', 'Head-to-head, 10 categories'], ['Season', `${C.weeks || 22} weeks + ${ESPN && ESPN.playoffTeams || 4}-team playoff`], ['Keepers', `${C.keepers.hitters} hitters + ${C.keepers.pitchers} pitchers`], ['Buy-in', C.buyIn || '$194'], ['Since', String(C.founded || 2021)]];
+  const glanceHtml = `<section class="card pad" aria-label="League at a glance"><h2 style="font-size:15px;margin-bottom:6px">League at a glance</h2>${glance.map(([k, v]) => `<div class="drow" style="padding:8px 0"><span class="grow small" style="font-size:13px">${k}</span><b style="font-size:13px">${esc(v)}</b></div>`).join('')}</section>`;
+  const champHtml = champ ? `<section class="champ" aria-label="Defending champion"><span class="trophy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg></span>
+    <div class="grow"><span class="lbl" style="color:var(--amber-t)">${esc(champ[0])} champion</span><span class="cname">${esc(champ[1])}</span><span class="small">${[teamNameOf(champ[1]), titles > 1 ? ord(titles) + ' title' : 'first title', champ[2] ? 'runner-up ' + champ[2] : ''].filter(Boolean).map(esc).join(' · ')}</span></div></section>` : '';
+  return `${champHtml}<div class="home">
+    <div class="hcol">${datesHtml}${annHtml}${resHtml}${standHtml}</div>
+    <div class="hcol">${brHtml}${raceHtml}${tilesHtml}${glanceHtml}</div></div>`;
+}
+setInterval(() => document.querySelectorAll('[data-until]').forEach(el => { el.textContent = untilText(Number(el.dataset.until)); }), 30000);
+
+// ---------- Teams index ----------
+function viewTeams(){
+  nav('Teams');
+  head('Teams', `${teams.length} teams · tap a team for its roster`);
+  const st = (ESPN && ESPN.standings) || [];
+  return `<div class="teams">${teams.map(t => { const s = st.find(x => x.owner === t.owner) || {};
+    return `<a class="card team" href="#/team/${encodeURIComponent(t.abbr)}"><div class="badge">${esc(t.abbr)}</div><div class="grow" style="gap:4px"><div class="row-between"><span class="who">${esc(t.owner)}</span>${s.w != null ? `<span class="small">${s.w}-${s.l}-${s.t}</span>` : ''}</div><span class="small">${esc(s.name || '')}</span><span class="small">${t.players.length} players · ${C.season} Round 1 pick ${t.pick}</span></div></a>`; }).join('')}</div>`;
+}
+
 // ---------- Router ----------
 // Inside Apps Script the app runs in a sandboxed frame, so routes go through google.script.history
 // (keeps the browser Back button and lets a link like .../exec#/team/SKY open straight to a team).
@@ -549,7 +683,9 @@ function render(){
   else if (parts[0] === 'planner') { html = viewPlanner(parts[1]); after = () => bindPlanner(parts[1]); }
   else if (parts[0] === 'history') { html = viewHistory(parts[1], parts[2], parts[3]); after = bindHistory; }
   else if (parts[0] === 'rules') { html = viewRules(); after = () => bindRules(parts[1]); }
-  else html = viewLeague();
+  else if (parts[0] === 'teams') html = viewTeams();
+  else if (parts[0] === 'keepers') html = viewKeepers();
+  else html = viewHome();
   $('app').innerHTML = html + `<div class="ftr">MFB Portal · stats from the MLB Stats API</div>`;
   if (after) after();
 }
