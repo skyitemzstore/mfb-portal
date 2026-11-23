@@ -567,12 +567,23 @@ if (GSH){
 }
 }
 (function load(){
+  // Show fresh data when it arrives quickly; if the data service is slow or down, fall back to the last copy this device saw.
   const app = document.getElementById('app');
+  let cached = null, started = false;
+  try { cached = JSON.parse(localStorage.getItem('mfb_data') || 'null'); } catch (e) {}
   document.getElementById('title').textContent = 'Loading…';
   app.innerHTML = '<div class="empty">Loading league data…</div>';
+  const begin = d => { if (!started) { started = true; start(d); } };
+  const timer = setTimeout(() => { if (cached) begin(cached); }, 5000);
   fetch(API + '?format=json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(start)
-    .catch(() => { document.getElementById('title').textContent = 'Could not load'; app.innerHTML = '<div class="empty">Could not reach the league data. Check your connection and refresh.<br><br><button class="btn" type="button" onclick="location.reload()">Try again</button></div>'; });
+    .then(d => { try { localStorage.setItem('mfb_data', JSON.stringify(d)); } catch (e) {} clearTimeout(timer); begin(d); })
+    .catch(() => {
+      clearTimeout(timer);
+      if (cached) return begin(cached);
+      if (started) return;
+      document.getElementById('title').textContent = 'Could not load';
+      app.innerHTML = '<div class="empty">Could not reach the league data. Check your connection and refresh.<br><br><button class="btn" type="button" onclick="location.reload()">Try again</button></div>';
+    });
 })();
 </script>
 </body>
