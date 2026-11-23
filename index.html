@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MFB Portal</title>
+<meta name="theme-color" content="#1F4E79">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MFB Portal">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1F4E79;--navy-d:#163a5a;--teal:#0F766E;--teal-l:#E6F4F1;--amber:#FFF6E5;--amber-b:#E8C98F;--amber-t:#7A4B00;--blue:#DCE9F7;--blue-t:#12324F;--ink:#14202B;--muted:#5B6670;--line:#E3E7EC;--bg:#F4F6F8;--card:#FFFFFF;--warn:#9A3412}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.4 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-text-size-adjust:100%}
+a{color:var(--navy)}
+button{font:inherit}
+h1,h2,h3{margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+header.bar{background:var(--navy);color:#fff}
+header.bar .wrap{display:flex;flex-direction:column;gap:4px;padding-top:16px;padding-bottom:18px}
+.toprow{display:flex;align-items:center;gap:8px;min-height:32px}
+.kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#C9DAEC;font-weight:600}
+.back{display:none;align-items:center;justify-content:center;width:40px;height:40px;margin-left:-10px;border:0;background:none;color:#fff;cursor:pointer;border-radius:10px}
+.back.on{display:inline-flex}
+.back:hover{background:rgba(255,255,255,.12)}
+header h1{font-family:'Space Grotesk',Inter,sans-serif;font-size:26px;line-height:1.15}
+header .sub{margin:0;font-size:13px;color:#C9DAEC}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#6B7682;text-decoration:none;font-size:11px;font-weight:500}
+nav.tabs a.on{color:var(--navy);font-weight:700}
+nav.tabs svg{width:22px;height:22px}
+nav.top{display:none}
+main{padding:16px 0 96px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.pad{padding:14px}
+.stat .lbl{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.stat .val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-top:2px}
+.h2{margin:18px 0 10px;font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:700;text-transform:uppercase}
+.teams{display:grid;grid-template-columns:1fr;gap:10px}
+.team{display:flex;gap:12px;padding:14px;text-decoration:none;color:var(--ink)}
+.team:hover{border-color:#B8C9DB}
+.badge{width:48px;height:48px;flex:none;border-radius:12px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px}
+.team .who{font-weight:700;font-size:15px}
+.small{font-size:12px;color:var(--muted)}
+.row-between{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:18px;font-size:13px;font-weight:600;text-decoration:none;background:#fff;color:var(--navy);border:1px solid var(--line)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.key{display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:11px;color:var(--muted);margin:12px 0}
+.key b{letter-spacing:.06em}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:5px}
+.sw.blue{background:var(--blue);border:1px solid #A9C3DF;border-radius:7px}
+.sw.amber{background:var(--amber);border:1px solid var(--amber-b)}
+.sw.sel{background:#EAF2FB;border:1px solid #A9C3DF}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-width:46px;height:28px;padding:0 8px;border-radius:14px;background:var(--blue);color:var(--blue-t);font-weight:700;font-size:13px;white-space:nowrap}
+.sec{overflow:hidden;margin-bottom:12px}
+.sechd{display:flex;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border-bottom:1px solid var(--line);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.prow{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);background:#fff}
+.prow:last-child{border-bottom:0}
+.prow.kept{background:var(--amber)}
+.prow .nm{font-weight:600;font-size:14px}
+.prow .meta{font-size:11px;color:var(--muted)}
+.prow .line{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yr{font-size:11px;color:var(--amber-t);font-weight:600}
+.grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tbl{display:none;width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{position:sticky;top:0;background:#F8FAFC;text-align:center;font-size:11px;letter-spacing:.04em;color:var(--muted);padding:9px 8px;border-bottom:2px solid var(--navy);white-space:nowrap}
+.tbl th.l,.tbl td.l{text-align:left}
+.tbl td{padding:8px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+.tbl tr.kept td{background:var(--amber)}
+.tbl td.cost{background:var(--blue);color:var(--blue-t);font-weight:700}
+.tbl tr:hover td{background:#EEF4FA}
+.tbl tr.kept:hover td{background:#FBEBCB}
+.tbl a{color:var(--ink);font-weight:600;text-decoration:none}
+.tbl a:hover{text-decoration:underline}
+.tbl .floor{color:#9AA0A6}
+.tbl .grp{border-left:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:0;border-radius:12px;background:var(--navy);color:#fff;font-weight:600;font-size:14px;cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--navy-d)}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.cost-card{display:flex;flex-direction:column;gap:2px;padding:14px;border-radius:14px;border:1px solid #A9C3DF;background:var(--blue)}
+.cost-card.kept{background:var(--amber);border-color:var(--amber-b)}
+.cost-card .big{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--blue-t)}
+.cost-card .lbl{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.stbl{width:100%;border-collapse:collapse;font-size:13px}
+.stbl th{font-size:11px;color:var(--muted);font-weight:700;padding:6px 4px;text-align:center;border-bottom:1px solid var(--line)}
+.stbl td{padding:8px 4px;text-align:center;border-bottom:1px solid var(--line)}
+.stbl td:first-child,.stbl th:first-child{text-align:left;font-weight:700}
+.scroll{overflow-x:auto}
+.bars{display:flex;gap:6px;height:170px;align-items:flex-end}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.bar i{display:block;width:100%;max-width:30px;border-radius:6px 6px 2px 2px}
+.bar b{font-size:11px}
+.bar span{font-size:10px;color:var(--muted)}
+.plab{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);min-height:52px;cursor:pointer;background:#fff}
+.plab.on{background:#EAF2FB}
+.plab input{width:22px;height:22px;accent-color:var(--navy);flex:none;margin:0}
+.moved{font-size:11px;color:var(--warn);font-weight:600}
+.lost{display:flex;gap:8px;flex-wrap:wrap}
+.lost span{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:32px;padding:0 8px;border-radius:8px;background:var(--navy);color:#fff;font-weight:700;font-size:13px}
+.count{flex:1;text-align:center;padding:8px;border-radius:10px;font-weight:700;font-size:13px;background:var(--teal-l);color:var(--teal)}
+.count.bad{background:#FDECE2;color:var(--warn)}
+select{font:inherit;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:#fff;color:var(--ink)}
+textarea{width:100%;min-height:90px;font:13px/1.4 Inter,sans-serif;border:1px solid var(--line);border-radius:10px;padding:10px}
+.empty{padding:20px;text-align:center;color:var(--muted)}
+.search{width:100%;height:42px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit;background:#fff}
+.two{display:grid;grid-template-columns:1fr;gap:12px}
+.ftr{margin-top:20px;font-size:11px;color:var(--muted);text-align:center}
+@media (min-width:900px){
+  nav.tabs{display:none}
+  nav.top{display:flex;gap:4px;margin-top:10px}
+  nav.top a{color:#C9DAEC;text-decoration:none;font-weight:600;font-size:14px;padding:8px 14px;border-radius:10px}
+  nav.top a.on,nav.top a:hover{background:rgba(255,255,255,.14);color:#fff}
+  main{padding:24px 0 48px}
+  .teams{grid-template-columns:repeat(3,1fr)}
+  .grid2.wide{grid-template-columns:repeat(4,1fr)}
+  .list{display:none}
+  .tbl{display:table}
+  .two{grid-template-columns:3fr 2fr;align-items:start}
+}
+@media (min-width:600px) and (max-width:899px){.teams{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <div class="toprow"><button class="back" id="back" type="button" aria-label="Back"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button><span class="kicker" id="kicker"></span></div>
+  <h1 id="title"></h1>
+  <p class="sub" id="sub"></p>
+  <nav class="top" id="topnav" aria-label="Main"></nav>
+</div></header>
+<main><div class="wrap" id="app"></div></main>
+<nav class="tabs" id="tabs" aria-label="Main"></nav>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbx1yO_BTls67TAFHAObH6JP0b2uQ9TG-_6IfyKfB8nd_CLxzDmgi9-VDoPAxQ05UiXZ3g/exec';
+function start(DATA){
+const C = DATA.config, P = DATA.players, PITCH = {SP:1, RP:1, P:1};
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $ = id => document.getElementById(id);
+const isP = p => !!PITCH[p.pos];
+const latest = DATA.statsSeasons[0] || '';
+const teams = DATA.order.map(t => Object.assign({}, t, {players: P.filter(p => p.o === t.owner).sort((a, b) => (a.r || 99) - (b.r || 99) || a.n.localeCompare(b.n))}));
+const byAbbr = a => teams.find(t => t.abbr === a) || teams[0];
+const teamOf = owner => teams.find(t => t.owner === owner);
+const ord = n => n + (n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th');
+const kept = p => (p.y || 0) > 1;
+const st = (p, season) => { const s = DATA.stats[p.n]; return s && s.seasons[season || latest] || null; };
+const info = p => DATA.stats[p.n] || {};
+const store = { get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }, set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+
+const ICON = {
+  League: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
+  Teams: 'M16 11a4 4 0 1 0-8 0M4 20c0-3 3.6-5 8-5s8 2 8 5',
+  Planner: 'M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11',
+  History: 'M12 8v4l3 2M3 12a9 9 0 1 0 3-6.7M3 4v4h4'
+};
+const NAV = [['League', '#/'], ['Teams', '#/team/'], ['Planner', '#/planner/'], ['History', '#/history']];
+function nav(active){
+  $('tabs').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[n]}"/></svg>${n}</a>`).join('');
+  $('topnav').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}">${n}</a>`).join('');
+}
+function head(title, sub, back){
+  $('kicker').textContent = C.league;
+  $('title').textContent = title;
+  $('sub').textContent = sub || '';
+  $('back').classList.toggle('on', !!back);
+  document.title = title + ' · MFB Portal';
+}
+
+function statLine(p, season){
+  const s = st(p, season);
+  if (!s) return latest ? 'No ' + (season || latest) + ' MLB stats' : 'Stats not loaded yet';
+  if (isP(p) && s.p){ const [g, gs, ip, w, sv, hld, k, era, whip] = s.p; return p.pos === 'RP' ? `${era} ERA · ${whip} WHIP · ${k} K · ${sv} SV · ${hld} HLD` : `${ip} IP · ${era} ERA · ${whip} WHIP · ${k} K · ${w} W`; }
+  if (s.h){ const [g, pa, avg, hr, r, rbi, sb, ops] = s.h; return `${avg} · ${hr} HR · ${r} R · ${rbi} RBI · ${sb} SB · ${ops} OPS`; }
+  if (s.p){ const [g, gs, ip, w, sv, hld, k, era, whip] = s.p; return `${ip} IP · ${era} ERA · ${k} K`; }
+  return 'No ' + (season || latest) + ' MLB stats';
+}
+const pill = r => r == null ? '' : `<span class="pill">R${r}</span>`;
+const plink = p => '#/player/' + encodeURIComponent(p.n);
+const keyCost = `<span><span class="sw blue"></span>2027 cost</span>`;
+const keyKept = `<span><span class="sw amber"></span>Kept in 2026</span>`;
+
+// ---------- League home ----------
+function viewLeague(){
+  nav('League');
+  head(C.season + ' Keeper Season', `Keepers due ${C.keeperDeadline}${DATA.statsUpdated ? ' · stats updated ' + new Date(DATA.statsUpdated).toLocaleDateString() : ''}`);
+  const champ = DATA.champs[0];
+  return `<div class="grid2 wide">
+    <div class="card pad stat"><div class="lbl">Trades &amp; FA open</div><div class="val">${esc(C.tradesOpen)}</div></div>
+    <div class="card pad stat"><div class="lbl">Defending champ</div><div class="val">${esc(champ ? champ[1] : '')}</div></div>
+    <div class="card pad stat"><div class="lbl">Keepers</div><div class="val">${C.keepers.hitters} H + ${C.keepers.pitchers} P</div></div>
+    <div class="card pad stat"><div class="lbl">Rulebook</div><div class="val"><a href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Open ↗</a></div></div>
+  </div>
+  <h2 class="h2">Teams in ${C.season} draft order</h2>
+  <div class="teams">${teams.map(t => {
+    const k = t.players.filter(kept);
+    return `<a class="card team" href="#/team/${encodeURIComponent(t.abbr)}"><div class="badge">${esc(t.abbr)}</div>
+      <div class="grow" style="gap:4px"><div class="row-between"><span class="who">${esc(t.owner)}</span><span class="small">Pick ${t.pick}</span></div>
+      <span class="small">${t.players.length} players · finished ${ord(t.finish)} last season${champ && champ[1] === t.owner ? ' · champion' : ''}</span>
+      <span style="font-size:12px"><b>${C.season - 1} keepers:</b> ${k.length ? k.map(p => esc(p.n) + ' (R' + p.r + ')').join(', ') : 'none'}</span></div></a>`;
+  }).join('')}</div>`;
+}
+
+// ---------- Team ----------
+function viewTeam(abbr){
+  nav('Teams');
+  const t = byAbbr(abbr), hit = t.players.filter(p => !isP(p)), pit = t.players.filter(isP);
+  store.set('mfb_team', t.abbr);
+  head(`${t.owner} · ${t.abbr}`, `${t.players.length} players · ${hit.length} hitters · ${pit.length} pitchers · Round 1 pick ${t.pick}`, true);
+  const chips = `<div class="chips" role="tablist" aria-label="Teams">${teams.map(x => `<a class="chip ${x.abbr === t.abbr ? 'on' : ''}" href="#/team/${encodeURIComponent(x.abbr)}">${esc(x.abbr)}</a>`).join('')}</div>`;
+  const row = p => `<a class="prow ${kept(p) ? 'kept' : ''}" href="${plink(p)}"><div class="grow">
+      <div><span class="nm">${esc(p.n)}</span> <span class="meta">${esc(p.pos)}${info(p).team ? ' · ' + esc(info(p).team) : ''}</span></div>
+      <span class="line">${esc(statLine(p))}</span>${kept(p) ? `<span class="yr">Year ${p.y} if kept</span>` : ''}</div>${pill(p.r)}</a>`;
+  const list = (label, ps) => `<section class="card sec list" aria-label="${label}"><div class="sechd"><span>${label}</span><span>${latest} stats · ${C.season} cost</span></div>${ps.map(row).join('') || '<div class="empty">None</div>'}</section>`;
+  const projHead = DATA.years.proj.slice(0, 3).map((y, i) => `<th class="${i ? '' : 'grp'}" title="Cost in ${esc(y)} if kept every year">${esc(y)} if kept</th>`).join('');
+  const projCells = p => p.proj.slice(0, 3).map((v, i) => `<td class="${i ? '' : 'grp'} ${v === 1 ? 'floor' : ''}">${v == null ? '' : v}</td>`).join('');
+  const tblH = `<table class="tbl card"><thead><tr><th class="l">Hitter</th><th>Pos</th><th>MLB</th><th class="grp">${C.season} cost</th><th>Year if kept</th><th class="grp">${latest} AVG</th><th>HR</th><th>R</th><th>RBI</th><th>SB</th><th>OPS</th>${projHead}</tr></thead><tbody>${hit.map(p => {
+      const s = (st(p) || {}).h || [];
+      return `<tr class="${kept(p) ? 'kept' : ''}"><td class="l"><a href="${plink(p)}">${esc(p.n)}</a></td><td>${esc(p.pos)}</td><td>${esc(info(p).team || '')}</td><td class="cost grp">R${p.r}</td><td>${p.y || ''}</td><td class="grp">${esc(s[2] || '–')}</td><td>${esc(s[3] ?? '–')}</td><td>${esc(s[4] ?? '–')}</td><td>${esc(s[5] ?? '–')}</td><td>${esc(s[6] ?? '–')}</td><td>${esc(s[7] || '–')}</td>${projCells(p)}</tr>`;
+    }).join('')}</tbody></table>`;
+  const tblP = `<table class="tbl card" style="margin-top:12px"><thead><tr><th class="l">Pitcher</th><th>Pos</th><th>MLB</th><th class="grp">${C.season} cost</th><th>Year if kept</th><th class="grp">${latest} IP</th><th>W</th><th>SV</th><th>HLD</th><th>K</th><th>ERA</th><th>WHIP</th>${projHead}</tr></thead><tbody>${pit.map(p => {
+      const s = (st(p) || {}).p || [];
+      return `<tr class="${kept(p) ? 'kept' : ''}"><td class="l"><a href="${plink(p)}">${esc(p.n)}</a></td><td>${esc(p.pos)}</td><td>${esc(info(p).team || '')}</td><td class="cost grp">R${p.r}</td><td>${p.y || ''}</td><td class="grp">${esc(s[2] || '–')}</td><td>${esc(s[3] ?? '–')}</td><td>${esc(s[4] ?? '–')}</td><td>${esc(s[5] ?? '–')}</td><td>${esc(s[6] ?? '–')}</td><td>${esc(s[7] || '–')}</td><td>${esc(s[8] || '–')}</td>${projCells(p)}</tr>`;
+    }).join('')}</tbody></table>`;
+  return `${chips}
+    <div class="key"><b>KEY</b>${keyCost}${keyKept}<span><span style="color:#9AA0A6;font-weight:700">1</span> in gray = cost has hit the Round 1 floor</span></div>
+    ${list('Hitters', hit)}${list('Pitchers', pit)}
+    <div class="scroll">${tblH}${tblP}</div>
+    <p style="margin-top:14px"><a class="btn" href="#/planner/${encodeURIComponent(t.abbr)}">Plan ${esc(t.abbr)} keepers</a></p>`;
+}
+
+// ---------- Player ----------
+function viewPlayer(name){
+  nav('Teams');
+  const p = P.find(x => x.n === name);
+  if (!p){ head('Player not found', '', true); return '<div class="empty">That player is not on a roster.</div>'; }
+  const t = teamOf(p.o), inf = info(p);
+  head(p.n, [p.pos, inf.team, inf.age ? 'age ' + inf.age : '', `${p.o} (${t ? t.abbr : ''})`].filter(Boolean).join(' · '), true);
+  const seasons = DATA.statsSeasons.filter(s => st(p, s));
+  const hRows = seasons.filter(s => st(p, s).h), pRows = seasons.filter(s => st(p, s).p);
+  const hTbl = hRows.length ? `<div class="scroll"><table class="stbl"><thead><tr><th>Year</th><th>G</th><th>PA</th><th>AVG</th><th>HR</th><th>R</th><th>RBI</th><th>SB</th><th>OPS</th></tr></thead><tbody>${hRows.map(s => `<tr><td>${esc(s)}</td>${st(p, s).h.map(v => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+  const pTbl = pRows.length ? `<div class="scroll"><table class="stbl"><thead><tr><th>Year</th><th>G</th><th>GS</th><th>IP</th><th>W</th><th>SV</th><th>HLD</th><th>K</th><th>ERA</th><th>WHIP</th></tr></thead><tbody>${pRows.map(s => `<tr><td>${esc(s)}</td>${st(p, s).p.map(v => `<td>${esc(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+  const ladder = [];
+  DATA.years.past.forEach((y, i) => { if (p.past[i] != null) ladder.push([y, p.past[i], 'past']); });
+  ladder.push([String(C.season), p.r, 'now']);
+  DATA.years.proj.slice(0, 4).forEach((y, i) => { if (p.proj[i] != null) ladder.push([y, p.proj[i], 'proj']); });
+  const mx = Math.max.apply(null, ladder.map(l => l[1] || 1));
+  const col = {past: '#AEB8C2', now: '#1F4E79', proj: '#7CC4BA'};
+  const bars = ladder.map(([y, r, k]) => `<div class="bar"><b style="color:${k === 'now' ? '#1F4E79' : '#14202B'}">R${r}</b><i style="height:${Math.max(10, Math.round(130 * r / mx))}px;background:${col[k]}"></i><span>'${esc(String(y).slice(2))}</span></div>`).join('');
+  return `<div class="two"><div style="display:flex;flex-direction:column;gap:12px">
+    <div class="cost-card ${kept(p) ? 'kept' : ''}"><span class="lbl">${C.season} keeper cost</span><span class="big">Round ${p.r}</span><span class="small" style="color:var(--ink)">${p.y > 1 ? 'Year ' + p.y + ' if kept' : 'First year if kept'} · ${esc(p.how)}</span></div>
+    <section class="card pad" aria-label="MLB stats"><div class="row-between" style="margin-bottom:8px"><h2 style="font-size:15px">MLB stats</h2><span class="small">MLB Stats API</span></div>
+      ${hTbl}${pTbl && hTbl ? '<div style="height:10px"></div>' : ''}${pTbl}${!hTbl && !pTbl ? '<div class="empty">No MLB stats in the last 3 seasons.</div>' : ''}</section>
+  </div>
+  <section class="card pad" aria-label="Keeper cost by year" style="display:flex;flex-direction:column;gap:12px">
+    <h2 style="font-size:15px">Keeper cost by year</h2>
+    <div class="key" style="margin:0"><b>KEY</b><span><span class="sw" style="background:#AEB8C2"></span>Past cost on this team</span><span><span class="sw" style="background:#1F4E79"></span>${C.season}</span><span><span class="sw" style="background:#7CC4BA"></span>If kept every year</span></div>
+    <div class="bars">${bars}</div>
+    <p class="small" style="margin:0">Shorter bar = earlier pick = more expensive. Cost bottoms out at Round 1.</p>
+    ${t ? `<a class="btn ghost" href="#/team/${encodeURIComponent(t.abbr)}">Back to ${esc(t.abbr)} roster</a>` : ''}
+  </section></div>`;
+}
+
+// ---------- Keeper planner ----------
+function assignCosts(sel){
+  const used = new Set(), out = {};
+  sel.slice().sort((a, b) => a.r - b.r).forEach(p => {
+    let r = p.r;
+    while (used.has(r) && r > 1) r--;
+    if (used.has(r)) { r = p.r; while (used.has(r)) r++; }
+    used.add(r); out[p.n] = r;
+  });
+  return out;
+}
+function viewPlanner(abbr){
+  nav('Planner');
+  const t = byAbbr(abbr || store.get('mfb_team') || '');
+  store.set('mfb_team', t.abbr);
+  head('Keeper planner', `${t.owner} · ${t.abbr} · pick ${C.keepers.hitters} hitters and ${C.keepers.pitchers} pitchers`, false);
+  const key = 'mfb_keep_' + t.abbr;
+  const picked = new Set((store.get(key) || []).filter(n => t.players.some(p => p.n === n)));
+  const sel = t.players.filter(p => picked.has(p.n));
+  const costs = assignCosts(sel);
+  const nh = sel.filter(p => !isP(p)).length, np = sel.length - nh;
+  const lost = Object.values(costs).sort((a, b) => a - b);
+  const summary = `${t.abbr} keepers for ${C.season}: ` + sel.slice().sort((a, b) => costs[a.n] - costs[b.n]).map(p => `${p.n} (R${costs[p.n]})`).join(', ');
+  const row = p => {
+    const on = picked.has(p.n), moved = on && costs[p.n] !== p.r;
+    return `<label class="plab ${on ? 'on' : ''}"><input type="checkbox" data-n="${esc(p.n)}" ${on ? 'checked' : ''}>
+      <span class="grow"><span><span class="nm" style="font-weight:600">${esc(p.n)}</span> <span class="small">${esc(p.pos)}${kept(p) ? ' · year ' + p.y : ''}</span></span>
+      ${moved ? `<span class="moved">Shares R${p.r} with another keeper: costs R${costs[p.n]}</span>` : `<span class="small">${esc(statLine(p))}</span>`}</span>${pill(p.r)}</label>`;
+  };
+  const sec = (label, ps) => `<section class="card sec" aria-label="${label}"><div class="sechd"><span>${label}</span><span>${C.season} cost</span></div>${ps.map(row).join('')}</section>`;
+  return `<div class="row-between" style="margin-bottom:12px;align-items:center"><label class="small" for="tsel" style="font-weight:600">Team</label>
+      <select id="tsel" style="flex:1;margin-left:10px">${teams.map(x => `<option value="${esc(x.abbr)}" ${x.abbr === t.abbr ? 'selected' : ''}>${esc(x.owner)} · ${esc(x.abbr)}</option>`).join('')}</select></div>
+    <div class="two"><div>
+      <div class="key" style="margin-top:0"><b>KEY</b>${keyCost}<span><span class="sw sel"></span>Selected</span></div>
+      ${sec('Hitters', t.players.filter(p => !isP(p)))}${sec('Pitchers', t.players.filter(isP))}
+    </div>
+    <section class="card pad" aria-label="Summary" style="display:flex;flex-direction:column;gap:10px;position:sticky;top:12px">
+      <div style="display:flex;gap:8px"><span class="count ${nh === C.keepers.hitters ? '' : 'bad'}">Hitters ${nh}/${C.keepers.hitters}</span><span class="count ${np === C.keepers.pitchers ? '' : 'bad'}">Pitchers ${np}/${C.keepers.pitchers}</span></div>
+      <div class="lbl small" style="font-weight:700;letter-spacing:.06em">PICKS YOU GIVE UP IN ${C.season}</div>
+      <div class="lost">${lost.length ? lost.map(r => `<span>R${r}</span>`).join('') : '<span style="background:#E3E7EC;color:#5B6670">None yet</span>'}</div>
+      <p class="small" style="margin:0">Two keepers in the same round: the second costs the next earlier round you still have; if none is left, the next later one (rulebook 4.3).</p>
+      ${sel.length ? `<textarea id="sumtxt" readonly aria-label="Keeper summary">${esc(summary)}</textarea><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="copy" type="button">Copy summary</button><button class="btn ghost" id="clear" type="button">Clear</button></div>` : ''}
+      <p class="small" style="margin:0">This is a planner only. Enter your keepers in ESPN by the deadline.</p>
+    </section></div>`;
+}
+function bindPlanner(abbr){
+  const t = byAbbr(abbr || store.get('mfb_team') || ''), key = 'mfb_keep_' + t.abbr;
+  document.querySelectorAll('.plab input').forEach(cb => cb.addEventListener('change', () => {
+    const cur = new Set(store.get(key) || []);
+    cb.checked ? cur.add(cb.dataset.n) : cur.delete(cb.dataset.n);
+    store.set(key, Array.from(cur)); render();
+  }));
+  const sel = $('tsel'); if (sel) sel.addEventListener('change', () => go('#/planner/' + encodeURIComponent(sel.value)));
+  const copy = $('copy'); if (copy) copy.addEventListener('click', () => {
+    const ta = $('sumtxt'); ta.select();
+    const done = () => { copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy summary', 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, () => { try { document.execCommand('copy'); done(); } catch(e){} });
+    else { try { document.execCommand('copy'); done(); } catch(e){} }
+  });
+  const clear = $('clear'); if (clear) clear.addEventListener('click', () => { store.set(key, []); render(); });
+}
+
+// ---------- History ----------
+function viewHistory(){
+  nav('History');
+  head('League history', 'Champions and league links', false);
+  return `<section class="card sec" aria-label="Champions"><div class="sechd"><span>Champions</span><span>Top 3</span></div>
+    <div class="scroll"><table class="stbl" style="margin:0"><thead><tr><th style="padding-left:14px">Year</th><th>Champion</th><th>2nd</th><th>3rd</th></tr></thead><tbody>${DATA.champs.map(r => `<tr><td style="padding-left:14px">${esc(r[0])}</td><td style="font-weight:700">${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody></table></div></section>
+    <div class="card pad" style="display:flex;flex-direction:column;gap:8px"><h2 style="font-size:15px">League links</h2>
+      <a href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Official rulebook ↗</a>
+      <span class="small">Round values are updated by the commissioner. MLB stats refresh automatically each day${DATA.statsUpdated ? ' (last: ' + new Date(DATA.statsUpdated).toLocaleString() + ')' : ''}.</span></div>`;
+}
+
+// ---------- Router ----------
+// Inside Apps Script the app runs in a sandboxed frame, so routes go through google.script.history
+// (keeps the browser Back button and lets a link like .../exec#/team/SKY open straight to a team).
+const GSH = window.google && google.script && google.script.history;
+let cur = '#/', depth = 0;
+function go(route, push){
+  cur = route || '#/';
+  if (push !== false){
+    depth++;
+    if (GSH) google.script.history.push(null, null, cur.slice(1));
+    else if (location.hash !== cur) { location.hash = cur; return; }
+  }
+  render(); window.scrollTo(0, 0);
+}
+function render(){
+  const parts = cur.slice(2).split('/').map(decodeURIComponent);
+  let html, after;
+  if (parts[0] === 'team') html = viewTeam(parts[1] || store.get('mfb_team') || '');
+  else if (parts[0] === 'player') html = viewPlayer(parts.slice(1).join('/'));
+  else if (parts[0] === 'planner') { html = viewPlanner(parts[1]); after = () => bindPlanner(parts[1]); }
+  else if (parts[0] === 'history') html = viewHistory();
+  else html = viewLeague();
+  $('app').innerHTML = html + `<div class="ftr">MFB Portal · stats from the MLB Stats API</div>`;
+  if (after) after();
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#/"]');
+  if (!a) return;
+  e.preventDefault(); go(a.getAttribute('href'));
+});
+$('back').addEventListener('click', () => { if (depth > 0) { depth--; history.back(); } else go('#/'); });
+if (GSH){
+  google.script.history.setChangeHandler(e => go('#' + (e.location.hash || '/'), false));
+  google.script.url.getLocation(loc => go('#' + (loc.hash || '/'), false));
+} else {
+  window.addEventListener('hashchange', () => go(location.hash || '#/', false));
+  go(location.hash || '#/', false);
+}
+}
+(function load(){
+  const app = document.getElementById('app');
+  document.getElementById('title').textContent = 'Loading…';
+  app.innerHTML = '<div class="empty">Loading league data…</div>';
+  fetch(API + '?format=json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(start)
+    .catch(() => { document.getElementById('title').textContent = 'Could not load'; app.innerHTML = '<div class="empty">Could not reach the league data. Check your connection and refresh.<br><br><button class="btn" type="button" onclick="location.reload()">Try again</button></div>'; });
+})();
+</script>
+</body>
+</html>
