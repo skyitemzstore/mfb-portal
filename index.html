@@ -29,7 +29,7 @@ header.bar .wrap{display:flex;flex-direction:column;gap:4px;padding-top:16px;pad
 .back:hover{background:rgba(255,255,255,.12)}
 header h1{font-family:'Space Grotesk',Inter,sans-serif;font-size:26px;line-height:1.15}
 header .sub{margin:0;font-size:13px;color:#C9DAEC}
-nav.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px calc(8px + env(safe-area-inset-bottom));z-index:5}
 nav.tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:#6B7682;text-decoration:none;font-size:11px;font-weight:500}
 nav.tabs a.on{color:var(--navy);font-weight:700}
 nav.tabs svg{width:22px;height:22px}
@@ -125,6 +125,39 @@ textarea{width:100%;min-height:90px;font:13px/1.4 Inter,sans-serif;border:1px so
   .two{grid-template-columns:3fr 2fr;align-items:start}
 }
 @media (min-width:600px) and (max-width:899px){.teams{grid-template-columns:1fr 1fr}}
+
+.htbl{width:100%;border-collapse:collapse;font-size:13px}
+.htbl th{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.04em;padding:9px 10px;background:#F8FAFC;border-bottom:2px solid var(--navy);text-align:center;white-space:nowrap}
+.htbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center;vertical-align:top}
+.htbl .l{text-align:left}
+.htbl tr.kept td{background:var(--amber)}
+.htbl tr.rsep td{background:#EEF3F8;color:var(--navy);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:6px 10px}
+.hgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.hgrid .sec{margin:0}
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.tl li{display:flex;gap:10px;font-size:13px}
+.tly{flex:none;width:44px;font-weight:700;color:var(--navy)}
+.rules-layout{display:grid;grid-template-columns:1fr;gap:12px}
+.toc{display:flex;flex-direction:column;gap:2px}
+.toc a{text-decoration:none;color:var(--navy);font-weight:600;font-size:13px;padding:5px 0}
+.toc a.sub{font-weight:500;color:var(--muted);padding:3px 0 3px 14px;font-size:12.5px}
+.toc a:hover{text-decoration:underline}
+.rules .rsec{margin-bottom:12px;scroll-margin-top:12px}
+.rules h2{font-family:'Space Grotesk',Inter,sans-serif;font-size:20px;color:var(--navy);padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid #C9D6E3}
+.rules h3{font-size:15px;color:#2E75B6;margin:16px 0 6px;scroll-margin-top:12px}
+.rules p{margin:8px 0;line-height:1.55}
+.rules ul{margin:6px 0;padding-left:20px}
+.rules li{margin:4px 0;line-height:1.5}
+.rules .rtable{margin:10px 0;border:1px solid var(--line);border-radius:10px}
+.rules .htbl th{background:var(--navy);color:#fff;border-bottom:0}
+main .two>*,.rules-layout>*{min-width:0}
+mark{background:#FFE58A;color:inherit;border-radius:2px;padding:0 1px}
+@media (min-width:900px){
+  .hgrid{grid-template-columns:repeat(2,1fr)}
+  .rules-layout{grid-template-columns:260px 1fr;align-items:start}
+  .rules-layout aside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+}
+@media (max-width:899px){ .rules-layout aside .toc{max-height:240px;overflow:auto} }
 </style>
 </head>
 <body>
@@ -158,9 +191,10 @@ const ICON = {
   League: 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
   Teams: 'M16 11a4 4 0 1 0-8 0M4 20c0-3 3.6-5 8-5s8 2 8 5',
   Planner: 'M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11',
-  History: 'M12 8v4l3 2M3 12a9 9 0 1 0 3-6.7M3 4v4h4'
+  History: 'M12 8v4l3 2M3 12a9 9 0 1 0 3-6.7M3 4v4h4',
+  Rules: 'M5 4a1 1 0 0 1 1-1h13v15H6a2 2 0 0 0-2 2V5M4 20a2 2 0 0 0 2 2h13v-4M9 7h6M9 11h6'
 };
-const NAV = [['League', '#/'], ['Teams', '#/team/'], ['Planner', '#/planner/'], ['History', '#/history']];
+const NAV = [['League', '#/'], ['Teams', '#/team/'], ['Planner', '#/planner/'], ['History', '#/history'], ['Rules', '#/rules']];
 function nav(active){
   $('tabs').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${ICON[n]}"/></svg>${n}</a>`).join('');
   $('topnav').innerHTML = NAV.map(([n, h]) => `<a href="${h}" class="${n === active ? 'on' : ''}">${n}</a>`).join('');
@@ -185,6 +219,7 @@ const pill = r => r == null ? '' : `<span class="pill">R${r}</span>`;
 const plink = p => '#/player/' + encodeURIComponent(p.n);
 const keyCost = `<span><span class="sw blue"></span>2027 cost</span>`;
 const keyKept = `<span><span class="sw amber"></span>Kept in 2026</span>`;
+const keyKeptPick = `<span><span class="sw amber"></span>Pick filled by a keeper</span>`;
 
 // ---------- League home ----------
 function viewLeague(){
@@ -195,7 +230,7 @@ function viewLeague(){
     <div class="card pad stat"><div class="lbl">Trades &amp; FA open</div><div class="val">${esc(C.tradesOpen)}</div></div>
     <div class="card pad stat"><div class="lbl">Defending champ</div><div class="val">${esc(champ ? champ[1] : '')}</div></div>
     <div class="card pad stat"><div class="lbl">Keepers</div><div class="val">${C.keepers.hitters} H + ${C.keepers.pitchers} P</div></div>
-    <div class="card pad stat"><div class="lbl">Rulebook</div><div class="val"><a href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Open ↗</a></div></div>
+    <div class="card pad stat"><div class="lbl">Rulebook</div><div class="val"><a href="#/rules">Read it</a></div></div>
   </div>
   <h2 class="h2">Teams in ${C.season} draft order</h2>
   <div class="teams">${teams.map(t => {
@@ -263,8 +298,14 @@ function viewPlayer(name){
     <div class="key" style="margin:0"><b>KEY</b><span><span class="sw" style="background:#AEB8C2"></span>Past cost on this team</span><span><span class="sw" style="background:#1F4E79"></span>${C.season}</span><span><span class="sw" style="background:#7CC4BA"></span>If kept every year</span></div>
     <div class="bars">${bars}</div>
     <p class="small" style="margin:0">Shorter bar = earlier pick = more expensive. Cost bottoms out at Round 1.</p>
+    ${timelineHtml(p.n)}
     ${t ? `<a class="btn ghost" href="#/team/${encodeURIComponent(t.abbr)}">Back to ${esc(t.abbr)} roster</a>` : ''}
   </section></div>`;
+}
+
+function timelineHtml(name){
+  const ev = playerTimeline(name);
+  return `<div style="border-top:1px solid var(--line);padding-top:12px"><h2 style="font-size:15px;margin-bottom:8px">In our league</h2>${ev.length ? `<ol class="tl">${ev.map(e => `<li><span class="tly">${esc(e.year)}</span><span>${esc(e.text)}</span></li>`).join('')}</ol>` : '<p class="small" style="margin:0">No draft or keeper history in our league yet.</p>'}</div>`;
 }
 
 // ---------- Keeper planner ----------
@@ -329,15 +370,160 @@ function bindPlanner(abbr){
   const clear = $('clear'); if (clear) clear.addEventListener('click', () => { store.set(key, []); render(); });
 }
 
-// ---------- History ----------
-function viewHistory(){
+// ---------- History helpers ----------
+const HIST = DATA.history || [];
+const tabsOf = type => HIST.filter(h => h.type === type).sort((a, b) => b.year - a.year);
+const colOf = (h, names) => { for (const n of names) { const i = h.headers.findIndex(x => String(x).trim().toLowerCase() === n.toLowerCase()); if (i >= 0) return i; } return -1; };
+const cell = (r, i) => i >= 0 ? (r[i] || '') : '';
+const normName = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/\b(jr|sr|ii|iii)\b/g, '').replace(/[^a-z]/g, '');
+function draftRows(h){
+  const c = { r: colOf(h, ['Round']), pk: colOf(h, ['Pick']), ov: colOf(h, ['Overall']), pl: colOf(h, ['Player']), pos: colOf(h, ['Pos', 'MLB Team, Pos']), nw: colOf(h, ['New Owner']), ow: colOf(h, ['Owner']), tm: colOf(h, ['Fantasy Team', 'Drafted By']), kp: colOf(h, ['Keeper']) };
+  return h.rows.map(x => ({ year: h.year, round: Number(cell(x, c.r)) || null, pick: Number(cell(x, c.pk)) || null, overall: Number(cell(x, c.ov)) || null, player: cell(x, c.pl), pos: cell(x, c.pos), owner: cell(x, c.nw) || cell(x, c.ow), team: cell(x, c.tm), keeper: /yes/i.test(cell(x, c.kp)) })).filter(d => d.player);
+}
+function keeperRows(h){
+  const c = { ow: colOf(h, ['Owner']), tm: colOf(h, ['Team']), pl: colOf(h, ['Player']), rv: colOf(h, ['Round Value']), adj: colOf(h, ['Adjusted Round']), yk: colOf(h, ['Years Kept']), nx: colOf(h, ['Next Year Value']) };
+  return h.rows.map(x => ({ year: h.year, owner: cell(x, c.ow), team: cell(x, c.tm), player: cell(x, c.pl), value: Number(cell(x, c.rv)) || null, cost: Number(cell(x, c.adj)) || Number(cell(x, c.rv)) || null, years: Number(cell(x, c.yk)) || null, next: Number(cell(x, c.nx)) || null })).filter(k => k.player);
+}
+function weeklyRows(h){
+  const c = { wk: colOf(h, ['Week']), cat: colOf(h, ['Category']), win: colOf(h, ['Winner']), tb: colOf(h, ['Won on Tiebreaker']) };
+  return h.rows.map(x => ({ year: h.year, week: cell(x, c.wk), cat: cell(x, c.cat), winner: cell(x, c.win), tb: cell(x, c.tb) })).filter(w => w.cat);
+}
+function seasonRows(){
+  const h = HIST.find(x => x.type === 'Season-Long Winners'); if (!h) return [];
+  const c = { yr: colOf(h, ['Year']), cat: colOf(h, ['Category']), win: colOf(h, ['Winner']), tot: colOf(h, ['Total']) };
+  return h.rows.map(x => ({ year: cell(x, c.yr), cat: cell(x, c.cat), winner: cell(x, c.win), total: cell(x, c.tot) })).filter(s => s.cat);
+}
+function tally(list){ const m = {}; list.forEach(n => { if (n) m[n] = (m[n] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])); }
+function playerTimeline(name){
+  const k = normName(name), ev = [];
+  tabsOf('Draft').forEach(h => draftRows(h).forEach(d => { if (normName(d.player) === k) ev.push({ year: d.year, ord: 0, text: d.keeper ? `Kept by ${d.owner} (filled R${d.round})` : `Drafted R${d.round}${d.pick ? ', pick ' + d.pick : ''}${d.owner ? ' by ' + d.owner : ''}` }); }));
+  tabsOf('Keepers').forEach(h => keeperRows(h).forEach(x => { if (normName(x.player) === k) ev.push({ year: x.year, ord: 1, text: `Kept by ${x.owner} at R${x.cost}${x.years ? ' (year ' + x.years + ')' : ''}` }); }));
+  // a kept player also fills a pick on that year's draft board; show only the keeper line for that year
+  const seen = new Set(ev.filter(e => e.ord === 1).map(e => e.year));
+  return ev.filter(e => !(e.ord === 0 && seen.has(e.year))).sort((a, b) => b.year - a.year || b.ord - a.ord);
+}
+
+// ---------- History views ----------
+function histNav(active, year){
+  const items = [['Overview', '#/history'], ['Drafts', '#/history/drafts'], ['Keepers', '#/history/keepers'], ['Categories', '#/history/categories']];
+  return `<div class="chips" role="tablist" aria-label="History sections">${items.map(([n, h]) => `<a class="chip ${n.toLowerCase() === active ? 'on' : ''}" href="${h}">${n}</a>`).join('')}</div>`;
+}
+function yearPicker(kind, years, year, extra){
+  return `<div class="row-between" style="margin:12px 0;align-items:center;gap:10px;flex-wrap:wrap"><div class="chips">${years.map(y => `<a class="chip ${String(y) === String(year) ? 'on' : ''}" href="#/history/${kind}/${y}">${y}</a>`).join('')}</div>${extra || ''}</div>`;
+}
+function viewHistory(section, year, filter){
   nav('History');
-  head('League history', 'Champions and league links', false);
-  return `<section class="card sec" aria-label="Champions"><div class="sechd"><span>Champions</span><span>Top 3</span></div>
-    <div class="scroll"><table class="stbl" style="margin:0"><thead><tr><th style="padding-left:14px">Year</th><th>Champion</th><th>2nd</th><th>3rd</th></tr></thead><tbody>${DATA.champs.map(r => `<tr><td style="padding-left:14px">${esc(r[0])}</td><td style="font-weight:700">${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('')}</tbody></table></div></section>
-    <div class="card pad" style="display:flex;flex-direction:column;gap:8px"><h2 style="font-size:15px">League links</h2>
-      <a href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Official rulebook ↗</a>
-      <span class="small">Round values are updated by the commissioner. MLB stats refresh automatically each day${DATA.statsUpdated ? ' (last: ' + new Date(DATA.statsUpdated).toLocaleString() + ')' : ''}.</span></div>`;
+  section = section || 'overview';
+  if (section === 'drafts'){
+    const tabs = tabsOf('Draft'); const h = tabs.find(t => t.year === year) || tabs[0];
+    head('Draft history', h ? `${h.year} draft · ${draftRows(h).length} picks` : 'No drafts yet');
+    if (!h) return histNav('drafts') + '<div class="empty">No draft tabs found.</div>';
+    const rows = draftRows(h), owners = Array.from(new Set(rows.map(r => r.owner).filter(Boolean))).sort();
+    const shown = filter ? rows.filter(r => r.owner === filter) : rows;
+    const sel = owners.length ? `<select id="hfilter" aria-label="Filter by owner" data-base="#/history/drafts/${h.year}"><option value="">All teams</option>${owners.map(o => `<option ${o === filter ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>` : '';
+    let lastRound = null;
+    const body = shown.map(r => { const sep = r.round !== lastRound && !filter; lastRound = r.round;
+      return `${sep ? `<tr class="rsep"><td colspan="5">Round ${r.round}</td></tr>` : ''}<tr class="${r.keeper ? 'kept' : ''}"><td>${r.overall || ((r.round - 1) * 10 + (r.pick || 0)) || ''}</td><td>R${r.round || ''}${r.pick ? '.' + r.pick : ''}</td><td class="l"><b>${esc(r.player)}</b> <span class="small">${esc(r.pos)}</span></td><td class="l">${esc(r.owner || '—')}</td><td>${r.keeper ? 'Keeper' : ''}</td></tr>`; }).join('');
+    return histNav('drafts') + yearPicker('drafts', tabs.map(t => t.year), h.year, sel) +
+      `<div class="key" style="margin-top:0"><b>KEY</b>${keyKeptPick}</div>` +
+      `<div class="card scroll"><table class="htbl"><thead><tr><th>#</th><th>Pick</th><th class="l">Player</th><th class="l">Owner</th><th></th></tr></thead><tbody>${body || '<tr><td colspan="5" class="empty">No picks</td></tr>'}</tbody></table></div>` +
+      (rows.some(r => r.owner) ? '' : '<p class="small">This year\'s draft sheet doesn\'t record which team made each pick.</p>');
+  }
+  if (section === 'keepers'){
+    const tabs = tabsOf('Keepers'); const h = tabs.find(t => t.year === year) || tabs[0];
+    head('Keeper history', h ? `${h.year} keepers` : 'No keepers yet');
+    if (!h) return histNav('keepers') + '<div class="empty">No keeper tabs found.</div>';
+    const rows = keeperRows(h), by = {};
+    rows.forEach(r => (by[r.owner] = by[r.owner] || []).push(r));
+    const cards = Object.keys(by).sort().map(o => `<section class="card sec" aria-label="${esc(o)}"><div class="sechd"><span>${esc(o)}</span><span>${esc(by[o][0].team || '')}</span></div>${by[o].sort((a, b) => (a.cost || 99) - (b.cost || 99)).map(r => `<div class="prow"><div class="grow"><span class="nm">${esc(r.player)}</span><span class="small">${r.years ? 'Year ' + r.years + ' kept' : ''}${r.next ? ' · next year R' + r.next : ''}</span></div>${pill(r.cost)}</div>`).join('')}</section>`).join('');
+    return histNav('keepers') + yearPicker('keepers', tabs.map(t => t.year), h.year) + `<div class="key" style="margin-top:0"><b>KEY</b><span><span class="sw blue"></span>Round the keeper cost that year</span></div><div class="hgrid">${cards}</div>`;
+  }
+  if (section === 'categories'){
+    const tabs = tabsOf('Weekly Categories'); const h = tabs.find(t => t.year === year) || tabs[0];
+    const seasons = seasonRows(), yr = h ? h.year : (seasons[0] || {}).year;
+    head('Category winners', yr ? `${yr} weekly and season-long winners` : '');
+    const wk = h ? weeklyRows(h) : [], sl = seasons.filter(s => String(s.year) === String(yr));
+    const years = Array.from(new Set(tabs.map(t => t.year).concat(seasons.map(s => s.year)))).sort().reverse();
+    const lead = tally(wk.map(w => w.winner));
+    return histNav('categories') + yearPicker('categories', years, yr) + `<div class="two"><section class="card sec" aria-label="Weekly"><div class="sechd"><span>Weekly categories</span><span>$20 each</span></div>
+      <div class="scroll"><table class="htbl"><thead><tr><th>Wk</th><th class="l">Category</th><th class="l">Winner</th></tr></thead><tbody>${wk.map(w => `<tr><td>${esc(w.week)}</td><td class="l">${esc(w.cat)}</td><td class="l"><b>${esc(w.winner)}</b>${w.tb ? ' <span class="small">(tiebreaker)</span>' : ''}</td></tr>`).join('') || '<tr><td colspan="3" class="empty">No weekly results</td></tr>'}</tbody></table></div></section>
+      <div style="display:flex;flex-direction:column;gap:12px">
+      <section class="card sec" aria-label="Season-long"><div class="sechd"><span>Season-long categories</span><span>$50 each</span></div>${sl.map(s => `<div class="prow"><div class="grow"><span class="nm">${esc(s.cat)}</span><span class="small">${esc(s.winner)}</span></div><span class="small" style="font-weight:700;color:var(--ink)">${esc(s.total)}</span></div>`).join('') || '<div class="empty">None recorded</div>'}</section>
+      ${lead.length ? `<section class="card sec" aria-label="Most weekly wins"><div class="sechd"><span>Most weekly wins, ${esc(yr)}</span><span>Wins</span></div>${lead.map(([n, c]) => `<div class="prow"><div class="grow"><span class="nm">${esc(n)}</span></div><b>${c}</b></div>`).join('')}</section>` : ''}
+      </div></div>`;
+  }
+  // overview
+  head('League history', 'Champions, titles and category wins');
+  const titles = tally(DATA.champs.map(r => r[1]));
+  const weeklyAll = tally([].concat.apply([], tabsOf('Weekly Categories').map(h => weeklyRows(h).map(w => w.winner))));
+  const seasonAll = tally(seasonRows().map(s => s.winner));
+  const board = (title, list, unit) => `<section class="card sec" aria-label="${title}"><div class="sechd"><span>${title}</span><span>${unit}</span></div>${list.map(([n, c]) => `<div class="prow"><div class="grow"><span class="nm">${esc(n)}</span></div><b>${c}</b></div>`).join('') || '<div class="empty">None yet</div>'}</section>`;
+  return histNav('overview') + `<div class="two" style="margin-top:12px"><div>
+    <section class="card sec" aria-label="Champions"><div class="sechd"><span>Champions</span><span>Top 3</span></div>
+    <div class="scroll"><table class="htbl"><thead><tr><th>Year</th><th class="l">Champion</th><th class="l">2nd</th><th class="l">3rd</th></tr></thead><tbody>${DATA.champs.map(r => `<tr><td>${esc(r[0])}</td><td class="l"><b>${esc(r[1])}</b></td><td class="l">${esc(r[2])}</td><td class="l">${esc(r[3])}</td></tr>`).join('')}</tbody></table></div></section>
+    ${board('Championships', titles, 'Titles')}</div><div>
+    ${board('Weekly category wins, all years', weeklyAll, 'Wins')}${board('Season-long category wins, all years', seasonAll, 'Wins')}
+    </div></div>`;
+}
+function bindHistory(){
+  const f = $('hfilter');
+  if (f) f.addEventListener('change', () => go(f.dataset.base + (f.value ? '/' + encodeURIComponent(f.value) : '')));
+}
+
+// ---------- Rules ----------
+const slug = s => String(s).toLowerCase().replace(/&amp;/g, 'and').replace(/^\d+(\.\d+)*\.?\s*/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+function rulesSections(){
+  const R = DATA.rules || { blocks: [] }, secs = [];
+  let cur = null;
+  R.blocks.forEach(b => {
+    if (b.t === 'h2'){ cur = { title: b.text, id: slug(b.text), blocks: [] }; secs.push(cur); return; }
+    if (!cur){ cur = { title: '', id: 'intro', blocks: [] }; secs.push(cur); }
+    cur.blocks.push(b);
+  });
+  return secs;
+}
+function hl(html, q){
+  if (!q) return html;
+  const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+  return html.split(/(<[^>]+>)/).map(seg => seg.startsWith('<') ? seg : seg.replace(re, m => `<mark>${m}</mark>`)).join('');
+}
+function blocksHtml(blocks, q){
+  let out = '', inList = false;
+  blocks.forEach(b => {
+    if (b.t !== 'li' && inList){ out += '</ul>'; inList = false; }
+    if (b.t === 'h3') out += `<h3 id="r-${slug(b.text)}">${hl(esc(b.text), q)}</h3>`;
+    else if (b.t === 'p') out += `<p>${hl(b.html, q)}</p>`;
+    else if (b.t === 'li'){ if (!inList){ out += '<ul>'; inList = true; } out += `<li style="margin-left:${(b.lvl || 0) * 18}px">${hl(b.html, q)}</li>`; }
+    else if (b.t === 'table') out += `<div class="scroll rtable"><table class="htbl">${b.rows.map((r, i) => `<tr>${r.map(c => i ? `<td class="l">${hl(c, q)}</td>` : `<th class="l">${hl(c, q)}</th>`).join('')}</tr>`).join('')}</table></div>`;
+  });
+  if (inList) out += '</ul>';
+  return out;
+}
+const blockText = b => (b.text || b.html || (b.rows || []).map(r => r.join(' ')).join(' ') || '').replace(/<[^>]+>/g, ' ');
+function rulesBody(q){
+  const secs = rulesSections();
+  const qq = (q || '').trim().toLowerCase();
+  const shown = qq ? secs.filter(s => (s.title + ' ' + s.blocks.map(blockText).join(' ')).toLowerCase().includes(qq)) : secs;
+  if (!shown.length) return `<div class="empty">No rules mention “${esc(q)}”.</div>`;
+  return shown.map(s => `<section class="card pad rsec" id="r-${s.id}">${s.title ? `<h2>${hl(esc(s.title), qq)}</h2>` : ''}${blocksHtml(s.blocks, qq)}</section>`).join('');
+}
+function viewRules(){
+  nav('Rules');
+  const R = DATA.rules || {};
+  head(R.title || 'Rulebook', R.sub || 'Official league rules');
+  const secs = rulesSections();
+  if (!secs.length) return `<div class="card pad"><p>The rulebook couldn't be loaded right now.</p><a class="btn" href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Open the rulebook in Google Docs</a></div>`;
+  const toc = `<nav class="card pad toc" aria-label="Rulebook contents"><div class="lbl small" style="font-weight:700;letter-spacing:.06em;margin-bottom:6px">CONTENTS</div>${secs.filter(s => s.title).map(s => `<a href="#/rules/${s.id}">${esc(s.title)}</a>${s.blocks.filter(b => b.t === 'h3').map(b => `<a class="sub" href="#/rules/${slug(b.text)}">${esc(b.text)}</a>`).join('')}`).join('')}</nav>`;
+  return `<div class="rules-layout"><aside>${toc}</aside><div>
+    <input class="search" id="rq" type="search" placeholder="Search the rules (e.g. keeper, tiebreaker, trade)" aria-label="Search the rules" style="margin-bottom:12px">
+    <div id="rbody" class="rules">${rulesBody('')}</div>
+    <p class="small" style="margin-top:12px">The commissioner keeps this rulebook up to date. <a href="${esc(DATA.rulebook)}" target="_blank" rel="noopener">Open it in Google Docs ↗</a></p>
+  </div></div>`;
+}
+function bindRules(target){
+  const q = $('rq');
+  if (q) q.addEventListener('input', () => { $('rbody').innerHTML = rulesBody(q.value); });
+  if (target){ const el = document.getElementById('r-' + target); if (el) setTimeout(() => el.scrollIntoView({ block: 'start' }), 0); }
 }
 
 // ---------- Router ----------
@@ -360,7 +546,8 @@ function render(){
   if (parts[0] === 'team') html = viewTeam(parts[1] || store.get('mfb_team') || '');
   else if (parts[0] === 'player') html = viewPlayer(parts.slice(1).join('/'));
   else if (parts[0] === 'planner') { html = viewPlanner(parts[1]); after = () => bindPlanner(parts[1]); }
-  else if (parts[0] === 'history') html = viewHistory();
+  else if (parts[0] === 'history') { html = viewHistory(parts[1], parts[2], parts[3]); after = bindHistory; }
+  else if (parts[0] === 'rules') { html = viewRules(); after = () => bindRules(parts[1]); }
   else html = viewLeague();
   $('app').innerHTML = html + `<div class="ftr">MFB Portal · stats from the MLB Stats API</div>`;
   if (after) after();
